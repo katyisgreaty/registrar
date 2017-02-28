@@ -68,6 +68,65 @@ namespace Registrar.Objects
             return allDepartments;
         }
 
+        public void Save()
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("INSERT INTO departments(major) OUTPUT INSERTED.id VALUES(@Major);", conn);
+
+            SqlParameter majorParameter = new SqlParameter("@Major", this.GetMajor());
+
+            cmd.Parameters.Add(majorParameter);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            while(rdr.Read())
+            {
+                this._id = rdr.GetInt32(0);
+            }
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if(conn != null)
+            {
+                conn.Close();
+            }
+        } // end save
+
+        public static Department Find(int id)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM departments WHERE id = @Department_Id;", conn);
+
+            SqlParameter departmentIdParameter = new SqlParameter("@Department_Id", id);
+            cmd.Parameters.Add(departmentIdParameter);
+
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            int foundDepartmentId = 0;
+            string foundDepartmentMajor = null;
+
+            while(rdr.Read())
+            {
+                foundDepartmentId = rdr.GetInt32(0);
+                foundDepartmentMajor = rdr.GetString(1);
+            }
+
+            Department foundDepartment = new Department(foundDepartmentMajor, foundDepartmentId);
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if (conn != null)
+            {
+                conn.Close();
+            }
+
+            return foundDepartment;
+        }
+
 
         public static void DeleteAll()
         {

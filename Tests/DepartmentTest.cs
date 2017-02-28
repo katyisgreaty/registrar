@@ -33,6 +33,45 @@ namespace Registrar
             Assert.Equal(firstDepartment, secondDepartment);
         }
 
+        [Fact]
+        public void Test_Save_ReturnsSavedDepartment()
+        {
+          Department testDepartment = new Department("CHID");
+          testDepartment.Save();
+
+          List<Department> totalDepartments = Department.GetAll();
+          List<Department> testDepartments = new List<Department>{testDepartment};
+
+          Assert.Equal(testDepartments, totalDepartments);
+        }
+
+        [Fact]
+        public void Test_Save_AssignsIdToObject()
+        {
+          Department testDepartment = new Department("CHID");
+
+          testDepartment.Save();
+          Department savedDepartment = Department.GetAll()[0];
+
+          int result = savedDepartment.GetId();
+          int testId = testDepartment.GetId();
+          Assert.Equal(testId, result);
+        }
+
+        [Fact]
+        public void Find_FindsDepartmentInDatabase()
+        {
+          //Arrange
+          Department testDepartment = new Department("Biology");
+          testDepartment.Save();
+
+          //Act
+          Department foundDepartment = Department.Find(testDepartment.GetId());
+
+          //Assert
+          Assert.Equal(testDepartment, foundDepartment);
+        }
+
 
         public void Dispose()
         {
