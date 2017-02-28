@@ -180,6 +180,23 @@ namespace Registrar.Objects
          }
        }
 
+       public void Delete()
+       {
+           SqlConnection conn = DB.Connection();
+           conn.Open();
+           SqlCommand cmd = new SqlCommand("DELETE FROM courses WHERE name = @CourseName; DELETE FROM students_courses WHERE course_id = @CourseId", conn);
+           SqlParameter courseParameter = new SqlParameter("@CourseName", this.GetName());
+           SqlParameter idParameter = new SqlParameter("@CourseId", this.GetId());
+           cmd.Parameters.Add(courseParameter);
+           cmd.Parameters.Add(idParameter);
+           cmd.ExecuteNonQuery();
+
+           if (conn != null)
+           {
+             conn.Close();
+           }
+       }
+
 
 
         public static void DeleteAll()

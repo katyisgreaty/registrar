@@ -98,6 +98,19 @@ namespace Registrar
             // Assert.Equal(newName, result.GetName());
         }
 
+        [Fact]
+        public void Delete_DeleteSingleCourse_true()
+        {
+            Course testCourse = new Course("Math 101", "MTH101");
+            Course testCourse2 = new Course("Anthropology 350", "ANTH350");
+            testCourse.Save();
+            testCourse2.Save();
+
+            testCourse.Delete();
+            Course foundCourse = Course.GetAll()[0];
+            Assert.Equal(testCourse2, foundCourse);
+         }
+
         public void Dispose()
         {
             Course.DeleteAll();
