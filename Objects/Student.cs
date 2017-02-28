@@ -136,6 +136,37 @@ namespace Registrar.Objects
             return allCompletedCourses;
         }
 
+        public List<Course> GetFailedCourses()
+        {
+            List<Course> allFailedCourses = new List<Course>{};
+
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("SELECT courses.* FROM students JOIN students_failedcourses ON (students.id = students_failedcourses.student_id) JOIN courses ON (students_failedcourses.course_id = courses.id) WHERE students.id = @StudentId;", conn);
+            SqlParameter studentIdParameter = new SqlParameter("@StudentId", this.GetId());
+            cmd.Parameters.Add(studentIdParameter);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            while(rdr.Read())
+            {
+                string name = rdr.GetString(1);
+                int courseId = rdr.GetInt32(0);
+                string courseNumber = rdr.GetString(2);
+                Course failedCourse = new Course(name, courseNumber, courseId);
+                allFailedCourses.Add(failedCourse);
+            }
+            if(rdr != null)
+            {
+                rdr.Close();
+            }
+            if(conn != null)
+            {
+                conn.Close();
+            }
+            return allFailedCourses;
+        }
+
         public static Student Find(int id)
         {
             SqlConnection conn = DB.Connection();

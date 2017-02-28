@@ -114,6 +114,21 @@ namespace Registrar
         }
 
         [Fact]
+        public void GetFailedCourses()
+        {
+            Student testStudent = new Student("Bill", "December 3");
+            Course testCourse = new Course("Biology of Drugs in the Brain", "BIO110");
+            testStudent.Save();
+            testCourse.Save();
+
+            testCourse.AddCompletedOrFailed(false, testStudent.GetId());
+            List<Course> testFailedCoursesList = new List<Course>{testCourse};
+            List<Course> result = testStudent.GetFailedCourses();
+
+            Assert.Equal(testFailedCoursesList, result);
+        }
+
+        [Fact]
         public void Delete_DeleteSingleStudent_true()
         {
             Student testStudent = new Student("Mark", "Yesterday");
