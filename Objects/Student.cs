@@ -6,18 +6,18 @@ namespace Registrar.Objects
 {
     public class Student
     {
-      private int _id;
-      private string _name;
-      private string _enrollment;
+        private int _id;
+        private string _name;
+        private string _enrollment;
 
-      public Student(string name, string enrollment, int id = 0)
-      {
-        _id = id;
-        _name = name;
-        _enrollment = enrollment;
-      }
+        public Student(string name, string enrollment, int id = 0)
+        {
+            _id = id;
+            _name = name;
+            _enrollment = enrollment;
+        }
 
-      public string GetName()
+        public string GetName()
         {
             return _name;
         }
@@ -33,22 +33,50 @@ namespace Registrar.Objects
         }
 
         public override bool Equals(System.Object otherStudent)
-       {
-           if (!(otherStudent is Student))
-           {
-               return false;
-           }
-           else
-           {
-               Student newStudent = (Student) otherStudent;
-               bool studentIdEquality = (this.GetId() == newStudent.GetId());
-               bool nameEquality = (this.GetName() == newStudent.GetName());
-               bool enrollmentEquality = (this.GetEnrollment() == newStudent.GetEnrollment());
-               return (studentIdEquality && nameEquality && enrollmentEquality);
-           }
-       }
+        {
+            if (!(otherStudent is Student))
+            {
+                return false;
+            }
+            else
+            {
+                Student newStudent = (Student) otherStudent;
+                bool studentIdEquality = (this.GetId() == newStudent.GetId());
+                bool nameEquality = (this.GetName() == newStudent.GetName());
+                bool enrollmentEquality = (this.GetEnrollment() == newStudent.GetEnrollment());
+                return (studentIdEquality && nameEquality && enrollmentEquality);
+            }
+        }
 
-       public static List<Student> GetAll()
+        public void Save()
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("INSERT INTO students(name, enrollment) OUTPUT INSERTED.id VALUES(@Name, @Enrollment);", conn);
+
+            SqlParameter nameParameter = new SqlParameter("@Name", this.GetName());
+            SqlParameter enrollmentParameter = new SqlParameter("@Enrollment", this.GetEnrollment());
+
+            cmd.Parameters.Add(nameParameter);
+            cmd.Parameters.Add(enrollmentParameter);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            while(rdr.Read())
+            {
+                this._id = rdr.GetInt32(0);
+            }
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if(conn != null)
+            {
+                conn.Close();
+            }
+        } // end save
+
+        public static List<Student> GetAll()
         {
             List<Student> allStudents = new List<Student>{};
 
@@ -77,13 +105,13 @@ namespace Registrar.Objects
             return allStudents;
         }
 
-       public static void DeleteAll()
+        public static void DeleteAll()
         {
-          SqlConnection conn = DB.Connection();
-          conn.Open();
-          SqlCommand cmd = new SqlCommand("DELETE FROM students;", conn);
-          cmd.ExecuteNonQuery();
-          conn.Close();
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("DELETE FROM students;", conn);
+            cmd.ExecuteNonQuery();
+            conn.Close();
         }
 
     }
