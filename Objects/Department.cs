@@ -127,6 +127,40 @@ namespace Registrar.Objects
             return foundDepartment;
         }
 
+        public void Update(string newMajor)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("UPDATE departments SET major = @NewMajor OUTPUT INSERTED.* WHERE id = @DepartmentId;", conn);
+
+            SqlParameter newMajorParameter = new SqlParameter();
+            newMajorParameter.ParameterName = "@NewMajor";
+            newMajorParameter.Value = newMajor;
+            cmd.Parameters.Add(newMajorParameter);
+
+            SqlParameter departmentIdParameter = new SqlParameter();
+            departmentIdParameter.ParameterName = "@DepartmentId";
+            departmentIdParameter.Value = this.GetId();
+            cmd.Parameters.Add(departmentIdParameter);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            while(rdr.Read())
+            {
+                this._major = rdr.GetString(1);
+            }
+
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+
+            if (conn != null)
+            {
+                conn.Close();
+            }
+        }
+
 
         public static void DeleteAll()
         {

@@ -72,6 +72,27 @@ namespace Registrar
           Assert.Equal(testDepartment, foundDepartment);
         }
 
+        [Fact]
+        public void Update_UpdateInDatabase_true()
+        {
+            //Arrange
+            string name = "Math";
+
+            Department testDepartment = new Department(name);
+            testDepartment.Save();
+            string newName = "Mathematics";
+
+            //Act
+            testDepartment.Update(newName);
+            Department result = Department.GetAll()[0];
+                Console.WriteLine(result.GetMajor());
+                Console.WriteLine(testDepartment.GetMajor());
+
+            //Assert
+            Assert.Equal(testDepartment, result);
+            // Assert.Equal(newName, result.GetName());
+        }
+
 
         public void Dispose()
         {
