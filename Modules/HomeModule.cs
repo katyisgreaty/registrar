@@ -16,6 +16,18 @@ namespace Registrar
             return View["index.cshtml"];
         };
 
+        Get["/students"]= _ => {
+            List<Student> allStudents = Student.GetAll();
+            return View["students.cshtml", allStudents];
+        };
+
+        Post["/students"] = _ =>
+        {
+            Student newStudent = new Student(Request.Form["student-name"], Request.Form["student-enrollment"]);
+            newStudent.Save();
+            List<Student> allStudents = Student.GetAll();
+            return View["students.cshtml", allStudents];
+        };
     }
   }
 }
