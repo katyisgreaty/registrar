@@ -108,6 +108,20 @@ namespace Registrar
             Assert.Equal(testList2, testList);
         }
 
+        [Fact]
+        public void AddCourse_AddCourseToDepartment_true()
+        {
+            Department testDepartment = new Department("Business");
+            testDepartment.Save();
+            Course testCourse = new Course("MicroEconomics", "ECON220");
+            testCourse.Save();
+            testDepartment.AddCourse(testCourse.GetId());
+
+            List<Course> testList = testDepartment.GetCourses();
+            List<Course> testList2 = new List<Course>(){testCourse};
+
+            Assert.Equal(testList2, testList);
+        }
 
 
         public void Dispose()
