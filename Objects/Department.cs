@@ -161,6 +161,59 @@ namespace Registrar.Objects
             }
         }
 
+        public void AddStudent(int studentId)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("INSERT INTO students_departments (student_id, department_id) VALUES (@StudentId, @DepartmentId);", conn);
+            SqlParameter studentIdParameter = new SqlParameter("@StudentId", studentId);
+            SqlParameter departmentIdParameter = new SqlParameter("@DepartmentId", this.GetId());
+            cmd.Parameters.Add(studentIdParameter);
+            cmd.Parameters.Add(departmentIdParameter);
+
+            cmd.ExecuteNonQuery();
+
+            if (conn != null)
+            {
+                conn.Close();
+            }
+        }
+
+        public List<Student> GetStudents()
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("SELECT students.* FROM departments JOIN students_departments ON (departments.id = students_departments.department_id) JOIN students ON (students_departments.student_id = students.id) WHERE department_id = @DepartmentId;", conn);
+            SqlParameter departmentIdParameter = new SqlParameter();
+            departmentIdParameter.ParameterName = "@DepartmentId";
+            departmentIdParameter.Value = this.GetId();
+
+            cmd.Parameters.Add(departmentIdParameter);
+
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            List<Student> students = new List<Student> {};
+            while(rdr.Read())
+            {
+                int studentId = rdr.GetInt32(0);
+                string studentName = rdr.GetString(1);
+                string studentEnrollment = rdr.GetString(2);
+                Student newStudent = new Student(studentName, studentEnrollment, studentId);
+                students.Add(newStudent);
+            }
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if (conn != null)
+            {
+                conn.Close();
+            }
+            return students;
+        }
+
+
 
         public static void DeleteAll()
         {

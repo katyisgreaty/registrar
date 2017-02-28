@@ -93,6 +93,22 @@ namespace Registrar
             // Assert.Equal(newName, result.GetName());
         }
 
+        [Fact]
+        public void AddStudent_AddStudentToDepartment_true()
+        {
+            Department testDepartment = new Department("Business");
+            testDepartment.Save();
+            Student testStudent = new Student("Bill Jones", "March 30th");
+            testStudent.Save();
+            testDepartment.AddStudent(testStudent.GetId());
+
+            List<Student> testList = testDepartment.GetStudents();
+            List<Student> testList2 = new List<Student>(){testStudent};
+
+            Assert.Equal(testList2, testList);
+        }
+
+
 
         public void Dispose()
         {
