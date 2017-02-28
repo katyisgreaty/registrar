@@ -123,11 +123,24 @@ namespace Registrar
             Assert.Equal(testList2, testList);
         }
 
+        [Fact]
+        public void Delete_DeleteSingleDepartment_true()
+        {
+            Department testDepartment = new Department("Business");
+            Department testDepartment2 = new Department("Math");
+            testDepartment.Save();
+            testDepartment2.Save();
+            testDepartment.Delete();
+            List<Department> testList = Department.GetAll();
+            List<Department> testList2 = new List<Department>(){testDepartment2};
+            Assert.Equal(testList2, testList);
+        }
+
 
         public void Dispose()
         {
             Department.DeleteAll();
-            // Student.DeleteAll();
+            Student.DeleteAll();
             // Course.DeleteAll();
         }
     }

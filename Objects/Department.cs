@@ -265,6 +265,23 @@ namespace Registrar.Objects
             return courses;
         }
 
+        public void Delete()
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("DELETE FROM departments WHERE major = @DepartmentMajor; DELETE FROM students_departments WHERE department_id = @DepartmentId; DELETE FROM courses_departments WHERE department_id = @DepartmentId;", conn);
+            SqlParameter departmentMajorParameter = new SqlParameter("@DepartmentMajor", this.GetMajor());
+            SqlParameter departmentIdParameter = new SqlParameter("@DepartmentId", this.GetId());
+            cmd.Parameters.Add(departmentMajorParameter);
+            cmd.Parameters.Add(departmentIdParameter);
+            cmd.ExecuteNonQuery();
+
+            if (conn != null)
+            {
+                conn.Close();
+            }
+        }
+
 
 
         public static void DeleteAll()
