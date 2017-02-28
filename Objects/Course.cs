@@ -198,6 +198,33 @@ namespace Registrar.Objects
             }
         }
 
+        public void AddCompletedOrFailed(bool complete, int studentId)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+            SqlCommand cmd;
+            if (complete)
+            {
+                cmd = new SqlCommand("INSERT INTO students_completedcourses (student_id, course_id) VALUES (@StudentId, @CourseId);", conn);
+            }
+            else
+            {
+                cmd = new SqlCommand("INSERT INTO students_failedcourses (student_id, course_id) VALUES (@StudentId, @CourseId);", conn);
+            }
+
+            SqlParameter studentIdParameter = new SqlParameter("@StudentId", studentId);
+            SqlParameter courseIdParameter = new SqlParameter("@CourseId", this.GetId());
+            cmd.Parameters.Add(studentIdParameter);
+            cmd.Parameters.Add(courseIdParameter);
+
+            cmd.ExecuteNonQuery();
+
+            if (conn != null)
+            {
+                conn.Close();
+            }
+        }
+
         public List<Student> GetStudents()
         {
             SqlConnection conn = DB.Connection();
