@@ -105,6 +105,83 @@ namespace Registrar.Objects
             return allStudents;
         }
 
+        public static Student Find(int id)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM students WHERE id = @Student_Id;", conn);
+
+            SqlParameter studentIdParameter = new SqlParameter("@Student_Id", id);
+            cmd.Parameters.Add(studentIdParameter);
+
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            int foundStudentId = 0;
+            string foundStudentName = null;
+            string foundEnrollment = null;
+
+            while(rdr.Read())
+            {
+                foundStudentId = rdr.GetInt32(0);
+                foundStudentName = rdr.GetString(1);
+                foundEnrollment = rdr.GetString(2);
+            }
+
+            Student foundStudent = new Student(foundStudentName, foundEnrollment, foundStudentId);
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if (conn != null)
+            {
+                conn.Close();
+            }
+
+            return foundStudent;
+        }
+
+        public void Update(string newName, string newEnrollment)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("UPDATE students SET name = @NewName, enrollment = @NewEnrollment OUTPUT INSERTED.* WHERE id = @StudentId;", conn);
+
+            SqlParameter newNameParameter = new SqlParameter();
+            newNameParameter.ParameterName = "@NewName";
+            newNameParameter.Value = newName;
+            cmd.Parameters.Add(newNameParameter);
+
+            SqlParameter newEnrollmentParameter = new SqlParameter();
+            newEnrollmentParameter.ParameterName = "@NewEnrollment";
+            newEnrollmentParameter.Value = newEnrollment;
+            cmd.Parameters.Add(newEnrollmentParameter);
+
+            SqlParameter studentIdParameter = new SqlParameter();
+            studentIdParameter.ParameterName = "@StudentId";
+            studentIdParameter.Value = this.GetId();
+            cmd.Parameters.Add(studentIdParameter);
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            while(rdr.Read())
+         {
+           this._name = rdr.GetString(1);
+           this._enrollment = rdr.GetString(2);
+         }
+
+         if (rdr != null)
+         {
+           rdr.Close();
+         }
+
+         if (conn != null)
+         {
+           conn.Close();
+         }
+       }
+
+
+
         public static void DeleteAll()
         {
             SqlConnection conn = DB.Connection();

@@ -58,6 +58,46 @@ namespace Registrar
           Assert.Equal(testId, result);
         }
 
+        [Fact]
+        public void Test_FindFindsStudentInDatabase()
+        {
+          //Arrange
+          Student testStudent = new Student("Wendy", "two weeks ago");
+          testStudent.Save();
+
+          //Act
+          Student foundStudent = Student.Find(testStudent.GetId());
+
+          //Assert
+          Assert.Equal(testStudent, foundStudent);
+        }
+
+        [Fact]
+        public void Update_UpdateInDatabase_true()
+        {
+            //Arrange
+            string name = "Matthew Smith";
+            string enrollment = "Yesterday";
+
+            Student testStudent = new Student(name, enrollment);
+            testStudent.Save();
+            string newName = "rake leaves";
+            string newEnrollment = "true";
+
+            //Act
+            testStudent.Update(newName, newEnrollment);
+            Student result = Student.GetAll()[0];
+                Console.WriteLine(result.GetName());
+                Console.WriteLine(testStudent.GetName());
+
+                Console.WriteLine(result.GetEnrollment());
+                Console.WriteLine(testStudent.GetEnrollment());
+
+            //Assert
+            Assert.Equal(testStudent, result);
+            // Assert.Equal(newName, result.GetName());
+        }
+
         public void Dispose()
         {
             Student.DeleteAll();
