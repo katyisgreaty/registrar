@@ -190,6 +190,5 @@ namespace Registrar.Objects
             cmd.ExecuteNonQuery();
             conn.Close();
         }
-
     }
 }

@@ -98,6 +98,19 @@ namespace Registrar
             // Assert.Equal(newName, result.GetName());
         }
 
+        [Fact]
+        public void Delete_DeleteSingleStudent_true()
+        {
+            Student testStudent = new Student("Mark", "Yesterday");
+            Student testStudent2 = new Student("Sarah", "Tomorrow");
+            testStudent.Save();
+            testStudent2.Save();
+
+            testStudent.Delete();
+            Student foundStudent = Student.GetAll()[0];
+            Assert.Equal(testStudent2, foundStudent);
+         }
+
         public void Dispose()
         {
             Student.DeleteAll();
