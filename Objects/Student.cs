@@ -184,7 +184,7 @@ namespace Registrar.Objects
        {
            SqlConnection conn = DB.Connection();
            conn.Open();
-           SqlCommand cmd = new SqlCommand("DELETE FROM students WHERE name = @StudentName; DELETE FROM students_courses WHERE student_id = @StudentId", conn);
+           SqlCommand cmd = new SqlCommand("DELETE FROM students WHERE name = @StudentName; DELETE FROM students_courses WHERE student_id = @StudentId; DELETE FROM students_departments WHERE student_id = @StudentId", conn);
            SqlParameter studentParameter = new SqlParameter("@StudentName", this.GetName());
            SqlParameter idParameter = new SqlParameter("@StudentId", this.GetId());
            cmd.Parameters.Add(studentParameter);
