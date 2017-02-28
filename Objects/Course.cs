@@ -164,38 +164,91 @@ namespace Registrar.Objects
             SqlDataReader rdr = cmd.ExecuteReader();
 
             while(rdr.Read())
-         {
-           this._name = rdr.GetString(1);
-           this._courseNumber = rdr.GetString(2);
-         }
+            {
+                this._name = rdr.GetString(1);
+                this._courseNumber = rdr.GetString(2);
+            }
 
-         if (rdr != null)
-         {
-           rdr.Close();
-         }
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
 
-         if (conn != null)
-         {
-           conn.Close();
-         }
-       }
+            if (conn != null)
+            {
+                conn.Close();
+            }
+        }
 
-       public void Delete()
-       {
-           SqlConnection conn = DB.Connection();
-           conn.Open();
-           SqlCommand cmd = new SqlCommand("DELETE FROM courses WHERE name = @CourseName; DELETE FROM students_courses WHERE course_id = @CourseId", conn);
-           SqlParameter courseParameter = new SqlParameter("@CourseName", this.GetName());
-           SqlParameter idParameter = new SqlParameter("@CourseId", this.GetId());
-           cmd.Parameters.Add(courseParameter);
-           cmd.Parameters.Add(idParameter);
-           cmd.ExecuteNonQuery();
+        public void AddStudent(int studentId)
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("INSERT INTO students_courses (student_id, course_id) VALUES (@StudentId, @CourseId);", conn);
+            SqlParameter studentIdParameter = new SqlParameter("@StudentId", studentId);
+            SqlParameter courseIdParameter = new SqlParameter("@CourseId", this.GetId());
+            cmd.Parameters.Add(studentIdParameter);
+            cmd.Parameters.Add(courseIdParameter);
 
-           if (conn != null)
-           {
-             conn.Close();
-           }
-       }
+            cmd.ExecuteNonQuery();
+
+            if (conn != null)
+            {
+                conn.Close();
+            }
+        }
+
+        public List<Student> GetStudents()
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+
+            SqlCommand cmd = new SqlCommand("SELECT students.* FROM courses JOIN students_courses ON (courses.id = students_courses.course_id) JOIN students ON (students_courses.student_id = students.id) WHERE course_id = @CourseId;", conn);
+            SqlParameter courseIdParameter = new SqlParameter();
+            courseIdParameter.ParameterName = "@CourseId";
+            courseIdParameter.Value = this.GetId();
+
+            cmd.Parameters.Add(courseIdParameter);
+
+            SqlDataReader rdr = cmd.ExecuteReader();
+
+            List<Student> students = new List<Student> {};
+            while(rdr.Read())
+            {
+                int studentId = rdr.GetInt32(0);
+                string studentName = rdr.GetString(1);
+                string studentEnrollment = rdr.GetString(2);
+                Student newStudent = new Student(studentName, studentEnrollment, studentId);
+                students.Add(newStudent);
+            }
+            if (rdr != null)
+            {
+                rdr.Close();
+            }
+            if (conn != null)
+            {
+                conn.Close();
+            }
+            return students;
+        }
+
+
+        public void Delete()
+        {
+            SqlConnection conn = DB.Connection();
+            conn.Open();
+            SqlCommand cmd = new SqlCommand("DELETE FROM courses WHERE name = @CourseName; DELETE FROM students_courses WHERE course_id = @CourseId", conn);
+            SqlParameter courseParameter = new SqlParameter("@CourseName", this.GetName());
+            SqlParameter idParameter = new SqlParameter("@CourseId", this.GetId());
+            cmd.Parameters.Add(courseParameter);
+            cmd.Parameters.Add(idParameter);
+            cmd.ExecuteNonQuery();
+
+            if (conn != null)
+            {
+                conn.Close();
+            }
+        }
 
 
 

@@ -111,8 +111,24 @@ namespace Registrar
             Assert.Equal(testCourse2, foundCourse);
          }
 
+         [Fact]
+         public void AddStudent_AddStudentToCourse_true()
+         {
+             Course testCourse = new Course("Real Analysis", "MTH327");
+             testCourse.Save();
+             Student testStudent = new Student("Poor Soul", "Tomorrow");
+             testStudent.Save();
+             testCourse.AddStudent(testStudent.GetId());
+
+             List<Student> testList = testCourse.GetStudents();
+             List<Student> testList2 = new List<Student>(){testStudent};
+
+             Assert.Equal(testList2, testList);
+         }
+
         public void Dispose()
         {
+            Student.DeleteAll();
             Course.DeleteAll();
         }
 
