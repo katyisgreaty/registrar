@@ -1,0 +1,19 @@
+@{
+    Layout = "Shared/_Layout.cshtml";
+}
+<h2>Courses in this Department:</h2>
+<ul>
+    @foreach (var course in Model["courses"])
+    {
+        <li><a href="/courses/@course.GetId()">@course.GetName()</a></li>
+    }
+</ul>
+<h2>Students in this Department:</h2>
+<ul>
+    @foreach (var student in Model["students"])
+    {
+        <li><a href="/students/@student.GetId()">@student.GetName()</a></li>
+    }
+</ul>
+<h4><a href="/departments/new">Add a new department</a></h4>
+<h4><a href="/">Return home</a></h4>

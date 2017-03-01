@@ -1,0 +1,47 @@
+@{
+    Layout = "Shared/_Layout.cshtml";
+}
+
+@if (Model.Count == 0)
+{
+    <h4>You don't have any courses yet.</h4>
+}
+else
+{
+    @foreach(var course in Model)
+    {
+        <ul class="collapsible" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">class</i>@course.GetName()</div>
+                <div class="collapsible-body"><span>
+                    <span>
+                    <p>@course.GetCourseNumber()</p>
+                        <form action="/courses/@course.GetId()" method="get">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Get Details
+                                <i class="material-icons right">info</i>
+                            </button>
+                        </form>
+
+
+                    <ul>
+                        @foreach(var student in course.GetStudents())
+                        {
+                            <li>@student.GetName()</li>
+                        }
+                    </span>
+                </ul>
+            </div>
+        </li>
+    </ul>
+}
+}
+
+<h5>Add new course</h5>
+<hr />
+<form action="/courses" method="post">
+    <label for="course-name">Course name:</label>
+    <input id="course-name" name="course-name" type="text">
+    <label for="course-number">Course number:</label>
+    <input id="course-number" name="course-number" type="text">
+    <button type="submit">Add</button>
+</form>

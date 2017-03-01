@@ -13,14 +13,16 @@ else
         <ul class="collapsible" data-collapsible="accordion">
             <li>
                 <div class="collapsible-header"><i class="material-icons">perm_identity</i>@student.GetName()</div>
-                <div class="collapsible-body"><span>Blah blah test </span>
+                <div class="collapsible-body"><span>
+                    <p>@student.GetEnrollment()</p>
 
-                    <!-- <ul>
+                    <ul>
                     @foreach(var course in student.GetCompletedCourses())
                     {
                     <li>@course.GetName()</li>
                 }
-            </ul> -->
+                </span>
+            </ul>
         </div>
     </li>
 </ul>

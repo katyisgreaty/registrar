@@ -1,0 +1,36 @@
+@{
+    Layout = "Shared/_Layout.cshtml";
+}
+
+@if (Model.Count == 0)
+{
+    <h4>You don't have any departments yet.</h4>
+}
+else
+{
+    @foreach(var department in Model)
+    {
+        <ul class="collapsible" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">label_outline</i>@department.GetMajor()</div>
+                <div class="collapsible-body">
+                    <span>
+                        <form action="/departments/@department.GetId()" method="get">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Get Details
+                                <i class="material-icons right">info</i>
+                            </button>
+                        </form>
+                    </span>
+                </div>
+            </li>
+        </ul>
+    }
+}
+
+<h5>Add new department</h5>
+<hr />
+<form action="/departments" method="post">
+    <label for="department-major">Department major:</label>
+    <input id="department-major" name="department-major" type="text">
+    <button type="submit">Add</button>
+</form>
