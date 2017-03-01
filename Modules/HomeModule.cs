@@ -88,7 +88,7 @@ namespace Registrar
                 List<Student> StudentCourses = SelectedStudent.GetCompletedCourses();
                 List<Student> AllStudents = Student.GetAll();
                 model.Add("student", SelectedStudent);
-                model.Add("studentStudents", StudentStudents);
+                model.Add("studentCourses", StudentCourses);
                 model.Add("allStudents", AllStudents);
                 return View["student.cshtml", model];
             };
